@@ -23,57 +23,59 @@ namespace TeamStreamFunctionApp
         // Retrieve the desired database id (name) from the configuration file
         private static readonly string databaseId = "Videos";
         // Retrieve the desired collection id (name) from the configuration file
-        private static readonly string collectionId = "TagCollection";
+        private static readonly string collectionId = "VideoCollection";
         // Retrieve the DocumentDB URI from the configuration file
         private static readonly string endpointUrl = "https://teamstream.documents.azure.com:443/";
         // Retrieve the DocumentDB Authorization Key from the configuration file
-        private static readonly string authorizationKey = "daweNHNJuRl6mYye1nJ8pZigNvon5beHtjaI9yiZaAiez0yMeW251cdtelD76CSPShgQsE6o0BiGZ3Qfnbj62w==";
+        private static readonly string authorizationKey = "";
 
-        private static readonly string cogservAPIKey = "1aaf9ee2c5614c16ab6392087f405a3b";
+        private static readonly string cogservAPIKey = "";
 
 
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
-           
             log.Info($"Thumbnail Blob trigger function processing: {myBlob}");
+
+            string videoId = GetGuidFromBlobName(name);
 
             //Call API
             string result = await CallVisionAPIAnalyze(myBlob);
             VisionAnalysis data = JsonConvert.DeserializeObject<VisionAnalysis>(result);
-            data.videoId = GetGuidFromBlobName(name);
-            data.id = GetGuidFromBlobName(name);
-            log.Info($"Data received");
+            log.Info($"Data received from API");
 
             //Get Doc DB
             DocumentClient client;
             client = new DocumentClient(new Uri(endpointUrl), authorizationKey);
-            
-            log.Info("Start DocDB");
-
             var database = client.CreateDatabaseQuery().Where(db => db.Id == databaseId).AsEnumerable().FirstOrDefault();
-
-            // If the previous call didn't return a Database, it is necessary to create it
             if (database == null)
             {
-                database = await client.CreateDatabaseAsync(new Database { Id = databaseId });                
+                database = await client.CreateDatabaseAsync(new Database { Id = databaseId });
             }
-            
-            log.Info("done with DB ");
-
             // Try to retrieve the collection (Microsoft.Azure.Documents.DocumentCollection) whose Id is equal to collectionId
             var collection = client.CreateDocumentCollectionQuery(database.SelfLink).Where(c => c.Id == collectionId).ToArray().FirstOrDefault();
-
             // If the previous call didn't return a Collection, it is necessary to create it
             if (collection == null)
             {
                 collection = await client.CreateDocumentCollectionAsync(database.SelfLink, new DocumentCollection { Id = collectionId });
             }
-            
-            var document = await client.CreateDocumentAsync(collection.SelfLink, data);
-            
+            //get the document to update
+            dynamic videoDocument = client.CreateDocumentQuery<Document>(collection.SelfLink).Where(
+                d => d.Id == videoId).AsEnumerable().FirstOrDefault();
+            log.Info("done with DB...for now");
+
+            if (videoDocument != null)
+            {
+                Video videoToUpdate = videoDocument;
+                
+                videoToUpdate.VisionAPI.Add(data);               
+
+                var savedVideoDocument = await client.ReplaceDocumentAsync(videoDocument, videoToUpdate);
+
+                log.Info("Replaced. Now im done with DB.");
+            }
 
         }
-        
+
         static async Task<string> CallVisionAPIAnalyze(Stream image)
         {
             using (var client = new HttpClient())
@@ -121,9 +123,39 @@ namespace TeamStreamFunctionApp
         {
             public Description description { get; set; }
             public string requestId { get; set; }
-            public Metadata metadata { get; set; }
-            public string videoId { get; set; }
+            public Metadata metadata { get; set; }            
             public string id { get; set; }
         }
+
+        public class Video
+        {
+            public Guid Id { get; set; }
+            public string VideoId { get; set; }
+            public string VideoName { get; set; }
+            public string VideoUrl { get; set; }
+            public string VideoKeywords { get; set; }
+            public string VideoThumbnail { get; set; }
+            public DateTime VideoDate { get; set; }
+            public List<VisionAnalysis> VisionAPI { get; set; }
+        }
+
+        //public class Description
+        //{
+        //    public List<string> tags { get; set; }
+        //    public List<Caption> captions { get; set; }
+        //}
+
+        //public class Caption
+        //{
+        //    public string text { get; set; }
+        //    public double confidence { get; set; }
+        //}
+
+        //public class Metadata
+        //{
+        //    public int width { get; set; }
+        //    public int height { get; set; }
+        //    public string format { get; set; }
+        //}
     }
 }
