@@ -18,16 +18,19 @@ namespace TeamStreamFunctionApp
 {
     public class ThumbnailBlobTrigger
     {
-        
+
+
         // Retrieve the desired database id (name) from the configuration file
-        private static readonly string databaseId = "";
+        private static readonly string databaseId = "Videos";
         // Retrieve the desired collection id (name) from the configuration file
-        private static readonly string collectionId = "";
+        private static readonly string collectionId = "TagCollection";
         // Retrieve the DocumentDB URI from the configuration file
-        private static readonly string endpointUrl = "";
+        private static readonly string endpointUrl = "https://teamstream.documents.azure.com:443/";
         // Retrieve the DocumentDB Authorization Key from the configuration file
-        private static readonly string authorizationKey = "";
-        
+        private static readonly string authorizationKey = "daweNHNJuRl6mYye1nJ8pZigNvon5beHtjaI9yiZaAiez0yMeW251cdtelD76CSPShgQsE6o0BiGZ3Qfnbj62w==";
+
+        private static readonly string cogservAPIKey = "1aaf9ee2c5614c16ab6392087f405a3b";
+
 
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
@@ -37,7 +40,8 @@ namespace TeamStreamFunctionApp
             //Call API
             string result = await CallVisionAPIAnalyze(myBlob);
             VisionAnalysis data = JsonConvert.DeserializeObject<VisionAnalysis>(result);
-            //data.VideoId = Guid.Parse(GetGuidFromBlobName(name));
+            data.videoId = GetGuidFromBlobName(name);
+            data.id = GetGuidFromBlobName(name);
             log.Info($"Data received");
 
             //Get Doc DB
@@ -77,7 +81,7 @@ namespace TeamStreamFunctionApp
                 var content = new StreamContent(image);
                 var url = "https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description&language=en";
                 // Request headers
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "");
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", cogservAPIKey);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 var httpResponse = await client.PostAsync(url, content);
 
@@ -118,7 +122,8 @@ namespace TeamStreamFunctionApp
             public Description description { get; set; }
             public string requestId { get; set; }
             public Metadata metadata { get; set; }
-            //public Guid VideoId { get; set; }
+            public string videoId { get; set; }
+            public string id { get; set; }
         }
     }
 }

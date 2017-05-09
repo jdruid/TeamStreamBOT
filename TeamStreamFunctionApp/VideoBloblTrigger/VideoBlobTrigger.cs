@@ -18,9 +18,13 @@ namespace TeamStreamFunctionApp
 {
     public class VideoBlobTrigger
     {
+
+        private static readonly string baseUrl = "https://teamstream.blob.core.windows.net/";
+
+
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
-            string baseUrl = "";
+            //string baseUrl = "https://teamstream.blob.core.windows.net/";
             string videoPath = baseUrl + "videos/" + name;
                         
             var ffProbe = new NReco.VideoInfo.FFProbe();
@@ -60,8 +64,11 @@ namespace TeamStreamFunctionApp
 
             int frameLocation = 0;
             int i;
-            
-            for(i=0; i<=totalFrames; i++)
+
+            //debuggin only
+            totalFrames = 1;
+
+            for(i=1; i<=totalFrames; i++)
             {
                 MemoryStream ms = new MemoryStream();
                                 
