@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="page-header">
+    Manage Videos
+</h1>
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Videos</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Delete</th>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                        <tr>
+                            <td></td>
+                            <td>@item</td>
+                            <td><a href="@item">Video</a></td>
+                            <td></td>
+                        </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="page-header">
+    Upload Videos
+</h1>
+<div class="row">
+    <div class="col-lg-6">
+
+        @using (Html.BeginForm("UploadAsync", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            <div class="form-group">
+                <label>Title</label>
+                <input class="form-control" id="VideoName" name="VideoName">
+            </div>
+
+            <div class="form-group">
+                <div class='input-group date' id='datepicker'>
+                    <input type='text' class="form-control" id="VideoDate" name="VideoDate" placeholder="MM/DD/YYYY" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Keywords/Tags</label>
+                <input class="form-control" id="VideoKeywords" name="VideoKeywords">
+            </div>
+
+            <div class="form-group">
+                <label>Video file</label>
+                <input type="file" id="file" name="selectFiles" class="upload" multiple />
+            </div>
+
+            <p id="FilesToUpload"></p>
+
+            <button type="submit" id="submit" class="btn btn-default">Submit</button>
+            <button type="reset" id="reset" class="btn btn-default">Reset</button>
+
+        }
+
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#datepicker").datepicker({
+                format: "mm/dd/yyyy",
+                autoclose: true
+            });
+
+            $("#file").on("change", function () {
+                var element = document.getElementById("file");
+                var html = "";
+
+                html = "<h3>File(s) to Upload</h3>"
+                for (var i = 0; i < element.files.length; i++) {
+                    html += "<strong>" + (i + 1) + "</strong>. File: ";
+                    var file = element.files[i];
+                    if ('name' in file) { html += file.name + " ("; }
+                    if ('size' in file) { html += "size: " + file.size + " bytes)<br>"; }
+                }
+
+                //html += "<div class='fileUpload btn btn-default'><span>Selected</span><input type='submit' class='upload' value='Upload'/></div>"
+                document.getElementById("FilesToUpload").innerHTML = html;
+            });
+
+            $("#reset").on("click", function () { document.getElementById("FilesToUpload").innerHTML = ""; });
+
+        });
+
+    </script>
+}
+
