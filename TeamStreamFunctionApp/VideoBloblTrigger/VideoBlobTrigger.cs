@@ -13,19 +13,16 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using NReco.VideoConverter;
 using NReco.VideoInfo;
+using TeamStreamFunctionApp.Shared;
 
 namespace TeamStreamFunctionApp
 {
     public class VideoBlobTrigger
     {
-
-        private static readonly string baseUrl = "https://teamstream.blob.core.windows.net/";
-
-
+        
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
-            //string baseUrl = "https://teamstream.blob.core.windows.net/";
-            string videoPath = baseUrl + "videos/" + name;
+            string videoPath = Keys.baseUrl + "videos/" + name;
                         
             var ffProbe = new NReco.VideoInfo.FFProbe();
             var videoInfo = ffProbe.GetMediaInfo(videoPath);
@@ -60,8 +57,7 @@ namespace TeamStreamFunctionApp
             }
 
             log.Info($"Video Info: chunk Size: {chunkSize} frames: {totalFrames}");
-
-
+            
             int frameLocation = 0;
             int i;
 
@@ -102,7 +98,7 @@ namespace TeamStreamFunctionApp
 
             string blobThumbContainerName = "thumbnails";
 
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=teamstream;AccountKey=eEquK4OxxNIfSlCdV0ieMgDEzc/uBT89d0gFXFfSkBlRY2JODbIzo8ElrjHSHzDx0rjGPb7a/UE8XnUJFcf9qQ==;EndpointSuffix=core.windows.net");
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Keys.storageConnectionString);
 
             // Create a blob client for interacting with the blob service.
             blobClient = storageAccount.CreateCloudBlobClient();

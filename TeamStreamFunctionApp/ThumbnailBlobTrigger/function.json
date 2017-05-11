@@ -9,15 +9,6 @@
       "direction": "in",
       "path": "thumbnails/{name}",
       "connection": "teamstream_STORAGE"
-    },
-    {
-      "type": "documentDB",
-      "name": "outputDocument",
-      "databaseName": "VideoAnalysis",
-      "collectionName": "VideoCollection",
-      "createIfNotExists": true,
-      "connection": "teamstream_DOCUMENTDB",
-      "direction": "out"
     }
   ]
 }
