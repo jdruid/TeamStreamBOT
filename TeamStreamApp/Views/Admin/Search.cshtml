@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="page-header">
+    Search Videos
+</h1>
+<div class="row">
+    <div class="col-lg-6">
+
+        @using (Html.BeginForm("SearchResults", "Admin", FormMethod.Post))
+        {
+
+            <div class="form-group">
+                <label>Search Term</label>
+                <input class="form-control" id="SearchTerm" name="SearchTerm">
+                
+            </div>
+
+            <div class="form-group">
+                <label>Search Type</label>
+                <select class="form-control" id="SearchType" name="SearchType">
+                    <option value="keywords">Data Entered Keywords</option>
+                    <option value="captions">Vision API Captions</option>
+                    <option value="tags">Vision API Captions and Tags</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submit" class="btn btn-default">Submit</button>
+            <button type="reset" id="reset" class="btn btn-default">Reset</button>
+
+        }
+
+    </div>
+</div>

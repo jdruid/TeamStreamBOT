@@ -11,6 +11,9 @@ using System.Net.Http;
 using TeamStreamApp.Models;
 using System.Configuration;
 
+using Microsoft.Azure.Search.Models;
+using TeamStreamApp.Search.Models;
+
 using TeamStreamApp.Repository;
 
 namespace TeamStreamApp.Controllers
@@ -28,6 +31,8 @@ namespace TeamStreamApp.Controllers
         const string blobThumbContainerName = "thumbnails";
         private static readonly string baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
 
+        private Search.TeamStreamSearch _teamstreamSearch;
+
         public AdminController()
         {
             _videoRespository = new VideoRepository();
@@ -43,6 +48,37 @@ namespace TeamStreamApp.Controllers
         {
             return View();
         }
+
+        public ActionResult Search()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SearchResults(string SearchTerm, string SearchType)
+        {
+            _teamstreamSearch = new Search.TeamStreamSearch(SearchType);
+
+            switch (SearchType)
+            {
+                case "keywords":
+                    List<KeywordSearchResults> searchResults = _teamstreamSearch.SearchDocumentsKeywords(SearchTerm);
+                    return View("SearchResultsKeywords",searchResults);
+                    //break;
+                case "captions":
+                    List<KeywordCaptionSearchResults> searchResults2 = _teamstreamSearch.SearchDocumentsKeywordsCaption(SearchTerm);
+                    return View("SearchResultsCaptions",searchResults2);
+                    //break;
+                default:
+                    List<KeywordCaptionTagSearchResults> searchResults3 = _teamstreamSearch.SearchDocumentsKeywordsCaptionTags(SearchTerm);
+                    return View("SearchResultsTags",searchResults3);
+                    //break;
+
+            }
+            
+        }
+
+
 
         // GET: Admin
         public async Task<ActionResult> Manage()

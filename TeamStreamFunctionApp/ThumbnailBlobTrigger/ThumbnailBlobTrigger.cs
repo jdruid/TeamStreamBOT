@@ -39,8 +39,8 @@ namespace TeamStreamFunctionApp
             log.Info($"Data received from API");
 
             string json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            Console.WriteLine(json);
-            log.Info(json);
+            //Console.WriteLine(json);
+            //log.Info(json);
 
             //call vision save
             await CallVisionAPISave(data);

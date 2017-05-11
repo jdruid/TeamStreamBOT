@@ -23,14 +23,14 @@ namespace TeamStreamFunctionApp
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
             string videoPath = Keys.baseUrl + "videos/" + name;
-                        
+
             var ffProbe = new NReco.VideoInfo.FFProbe();
             var videoInfo = ffProbe.GetMediaInfo(videoPath);
-            
+
             //video.Duration - 00:00:19.2416670
             TimeSpan duration = videoInfo.Duration;
             log.Info($"Video Info: duration: {videoInfo.Duration}");
-            
+
             //need to figure out the following
             /*
              * 0-60sec = every 10 sec
@@ -42,41 +42,42 @@ namespace TeamStreamFunctionApp
 
             if ((duration.TotalSeconds > 0) || (duration.TotalSeconds < 60))
             {
-                totalFrames = Convert.ToInt32(Math.Round( duration.TotalSeconds / 6, 0 ));
+                totalFrames = Convert.ToInt32(Math.Round(duration.TotalSeconds / 6, 0));
                 chunkSize = 6;
             }
             else if ((duration.TotalSeconds > 60) || (duration.TotalSeconds < 120))
             {
-                totalFrames = Convert.ToInt32(Math.Round( duration.TotalSeconds / 12, 0));
+                totalFrames = Convert.ToInt32(Math.Round(duration.TotalSeconds / 12, 0));
                 chunkSize = 12;
             }
             else
             {
-                totalFrames = Convert.ToInt32(Math.Round( duration.TotalSeconds / 24, 0));
+                totalFrames = Convert.ToInt32(Math.Round(duration.TotalSeconds / 24, 0));
                 chunkSize = 24;
             }
 
             log.Info($"Video Info: chunk Size: {chunkSize} frames: {totalFrames}");
-            
+
             int frameLocation = 0;
             int i;
 
             //debuggin only
             //totalFrames = 1;
 
-            for(i=0; i<=totalFrames; i++)
+            for (i = 0; i <= totalFrames; i++)
             {
                 MemoryStream ms = new MemoryStream();
-                                
+
                 var converter = new NReco.VideoConverter.FFMpegConverter();
                 if (frameLocation == 0)
                 {
                     converter.GetVideoThumbnail(videoPath, ms);
-                } else
+                }
+                else
                 {
                     converter.GetVideoThumbnail(videoPath, ms, frameLocation);
-                }  
-                
+                }
+
                 ms.Position = 0;
 
                 //move to blob

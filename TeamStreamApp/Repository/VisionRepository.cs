@@ -25,7 +25,7 @@ namespace TeamStreamApp.Repository
             InsertMetadata(vision.metadata, vision.videoId, vision.thumbnailIndex);
             InsertDescription(vision.description, vision.videoId, vision.thumbnailIndex);
             InsertCaption(vision.description, vision.videoId, vision.thumbnailIndex);
-
+            InsertVisionAnalysis(vision);
 
             return true;
         }
@@ -57,8 +57,8 @@ namespace TeamStreamApp.Repository
                     new { videoId = videoId, thumbnailIndex = thumbIndex, tags = item });
             }
 
-           
-                return true;
+            //TO DO: Better Error Handling
+            return true;
            
         }
         
@@ -75,8 +75,22 @@ namespace TeamStreamApp.Repository
                     new { videoId = videoId, thumbnailIndex = thumbIndex, text = item.text, confidence = item.confidence });
             }
 
-
+            //TO DO: Better Error Handling
             return true; 
+        }
+
+        public bool InsertVisionAnalysis(VisionAnalysis visionAnalysis)
+        {
+            int rowsAffected = this._db.Execute("INSERT INTO [VisionAnalysis] ([Id],[videoId],[requestId],[thumbnailUrl],[thumbnailIndex],[thumbnailCount]) " +
+                "VALUES (@Id,@videoId,@requestId,@thumbnailUrl,@thumbnailIndex,@thumbnailCount)",
+                new { Id = visionAnalysis.id, videoId = visionAnalysis.videoId, requestId = visionAnalysis.requestId, thumbnailUrl = visionAnalysis.thumbnailUrl, thumbnailIndex = visionAnalysis.thumbnailIndex, thumbnailCount = visionAnalysis.thumbnailCount });
+
+            if (rowsAffected > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void DeleteAllVision()

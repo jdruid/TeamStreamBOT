@@ -1,0 +1,46 @@
+﻿@model List<TeamStreamApp.Search.Models.KeywordCaptionTagSearchResults>
+
+@{
+    ViewBag.Title = "Search Results";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="page-header">
+    Search Results - Search Keywords, Computer Vision API Description AND Tags
+</h1>
+<div class="row">
+    <div class="col-lg-9">
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Keywords</th>
+                        <th>RawUrl</th>
+                        <th>ThumbnailUrl</th>
+                        <th>Caption</th>
+                        <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Keywords)</td>
+                        <td><a href="@Html.DisplayFor(modelItem => item.RawUrl)" target="_blank"><i class="fa fa-file-movie-o"></i></a></td>
+                        <td><a href="@Html.DisplayFor(modelItem => item.ThumbnailUrl)" target="_blank"><i class="fa fa-image"></i></a></td>
+                        <td>@Html.DisplayFor(modelItem => item.Text)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Tags)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
