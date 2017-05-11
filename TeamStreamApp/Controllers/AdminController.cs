@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
-using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.Azure;
 using System.IO;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Text;
-using System.Net.Http.Headers;
-
-using System.Net;
 using TeamStreamApp.Models;
 using System.Configuration;
+
+using TeamStreamApp.Repository;
 
 namespace TeamStreamApp.Controllers
 {
     public class AdminController : Controller
     {
+        private VideoRepository _videoRespository;
+
         static CloudBlobClient blobClient;
         static CloudBlobContainer blobThumbContainer;
         static CloudBlobContainer blobVideoContainer;
@@ -29,6 +26,11 @@ namespace TeamStreamApp.Controllers
         const string blobVideoContainerName = "videos";
         const string blobThumbContainerName = "thumbnails";
         private static readonly string baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+
+        public AdminController()
+        {
+            _videoRespository = new VideoRepository();
+        }
 
         public ActionResult Index()
         {
@@ -78,6 +80,7 @@ namespace TeamStreamApp.Controllers
             }
 
         }
+        
 
         /// <summary> 
         /// Task<ActionResult> UploadAsync() 
@@ -96,9 +99,9 @@ namespace TeamStreamApp.Controllers
             await blobVideoContainer.CreateIfNotExistsAsync();
             await blobVideoContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
             
-            //try
-            //{
-            string blobFileName = string.Empty;
+            try
+            {
+                string blobFileName = string.Empty;
                 var client = new HttpClient();
 
                 HttpFileCollectionBase files = Request.Files;
@@ -112,33 +115,27 @@ namespace TeamStreamApp.Controllers
 
                         //upload to Azure Blob Storage VIDEOS
                         CloudBlockBlob blob = blobVideoContainer.GetBlockBlobReference(blobFileName);
-                        //await blob.UploadFromFileAsync(files[i].FileName);
                         await blob.UploadFromStreamAsync(files[i].InputStream);
 
                         if (ModelState.IsValid)
                         {
                             video.Id = Guid.Parse(GetGuidFromBlobName(blobFileName));
-                            video.VideoId = GetGuidFromBlobName(blobFileName);
-                            video.VideoUrl = baseUrl + "videos/" + blobFileName;
-                            await DocumentDBRepository<Video>.CreateItemAsync(video);                            
+                            video.RawUrl = baseUrl + "videos/" + blobFileName;
+                            _videoRespository.InsertVideo(video);
                         }
-
                     }
                 }
 
                 return RedirectToAction("Index");
-            //}
-            //catch (Exception ex)
-            //{
-            //    ViewData["message"] = ex.Message;
-            //    ViewData["trace"] = ex.StackTrace;
-            //    return View("Error");
-            //}
+            }
+            catch (Exception ex)
+            {
+                ViewData["message"] = ex.Message;
+                ViewData["trace"] = ex.StackTrace;
+                return View("Error");
+            }
         }
-        
-        private string BytesToSrcString(byte[] bytes) => "data:image/png;base64," + Convert.ToBase64String(bytes);
-        
-
+       
         /// <summary> 
         /// Task<ActionResult> DeleteImage(string name) 
         /// Documentation References:  
@@ -214,6 +211,10 @@ namespace TeamStreamApp.Controllers
                 return View("Error");
             }
         }
+
+        
+        private string BytesToSrcString(byte[] bytes) => "data:image/png;base64," + Convert.ToBase64String(bytes);
+
 
         /// <summary> 
         /// string GetRandomBlobName(string filename): Generates a unique random file name to be uploaded  
