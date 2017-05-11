@@ -41,5 +41,10 @@ namespace TeamStreamApp.Repository
 
             return false;
         }
+
+        public void DeleteAllVideos()
+        {
+            this._db.Execute("DELETE FROM [Video]");
+        }
     }
 }

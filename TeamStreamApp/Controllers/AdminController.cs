@@ -18,6 +18,7 @@ namespace TeamStreamApp.Controllers
     public class AdminController : Controller
     {
         private VideoRepository _videoRespository;
+        private VisionRepository _visionRepository;
 
         static CloudBlobClient blobClient;
         static CloudBlobContainer blobThumbContainer;
@@ -30,6 +31,7 @@ namespace TeamStreamApp.Controllers
         public AdminController()
         {
             _videoRespository = new VideoRepository();
+            _visionRepository = new VisionRepository();
         }
 
         public ActionResult Index()
@@ -201,6 +203,9 @@ namespace TeamStreamApp.Controllers
                         await ((CloudBlockBlob)blob).DeleteIfExistsAsync();
                     }
                 }
+
+                _videoRespository.DeleteAllVideos();
+                _visionRepository.DeleteAllVision();
 
                 return RedirectToAction("Index");
             }

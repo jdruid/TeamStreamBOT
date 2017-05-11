@@ -12,5 +12,7 @@ namespace TeamStreamApp.Repository
 
         bool InsertVideo(Video video);
 
+        void DeleteAllVideos();
+
     }
 }

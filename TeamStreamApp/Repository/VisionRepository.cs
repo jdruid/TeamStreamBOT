@@ -79,6 +79,14 @@ namespace TeamStreamApp.Repository
             return true; 
         }
 
+        public void DeleteAllVision()
+        {
+            this._db.Execute("DELETE FROM [Caption]");
+            this._db.Execute("DELETE FROM [Metadata]");
+            this._db.Execute("DELETE FROM [Description]");
+            this._db.Execute("DELETE FROM [VisionAnalysis]");
+        }
+
 
     }
 }

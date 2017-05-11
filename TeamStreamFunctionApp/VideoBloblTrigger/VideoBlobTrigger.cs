@@ -62,9 +62,9 @@ namespace TeamStreamFunctionApp
             int i;
 
             //debuggin only
-            totalFrames = 1;
+            //totalFrames = 1;
 
-            for(i=1; i<=totalFrames; i++)
+            for(i=0; i<=totalFrames; i++)
             {
                 MemoryStream ms = new MemoryStream();
                                 
