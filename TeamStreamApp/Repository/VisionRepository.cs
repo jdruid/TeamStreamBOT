@@ -22,15 +22,63 @@ namespace TeamStreamApp.Repository
 
         public bool InsertVision(VisionAnalysis vision)
         {
+            InsertMetadata(vision.metadata, vision.videoId, vision.thumbnailIndex);
+            InsertDescription(vision.description, vision.videoId, vision.thumbnailIndex);
+            InsertCaption(vision.description, vision.videoId, vision.thumbnailIndex);
 
 
-
-            throw new NotImplementedException();
+            return true;
         }
 
-        private static void InsertMetadata(Metadata metadata)
+        public bool InsertMetadata(Metadata metadata, Guid videoId, int thumbIndex)
         {
+            int rowsAffected = this._db.Execute(@"INSERT INTO [Metadata] ([videoId],[thumbnailIndex],[width],[height],[format]) " +
+                "VALUES (@videoId, @thumbnailIndex,@width,@height,@format)",
+                new { videoId = videoId, thumbnailIndex = thumbIndex, width = metadata.width, height = metadata.height, format = metadata.format });
 
+            if (rowsAffected > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
+
+        public bool InsertDescription(Description description, Guid videoId, int thumbIndex)
+        {
+            description.videoId = videoId;
+            description.thumbnailIndex = thumbIndex;
+
+            foreach (var item in description.tags)
+            {
+
+                this._db.Execute("INSERT INTO [Description]([videoId],[thumbnailIndex],[tags]) " +
+                    "VALUES (@videoId, @thumbnailIndex, @tags)", 
+                    new { videoId = videoId, thumbnailIndex = thumbIndex, tags = item });
+            }
+
+           
+                return true;
+           
+        }
+        
+        public bool InsertCaption(Description description, Guid videoId, int thumbIndex)
+        {
+            description.videoId = videoId;
+            description.thumbnailIndex = thumbIndex;
+
+            foreach (var item in description.captions)
+            {
+
+                this._db.Execute("INSERT INTO [Caption]([videoId],[thumbnailIndex],[text],[confidence]) " +
+                    "VALUES (@videoId, @thumbnailIndex, @text, @confidence)", 
+                    new { videoId = videoId, thumbnailIndex = thumbIndex, text = item.text, confidence = item.confidence });
+            }
+
+
+            return true; 
+        }
+
+
     }
 }

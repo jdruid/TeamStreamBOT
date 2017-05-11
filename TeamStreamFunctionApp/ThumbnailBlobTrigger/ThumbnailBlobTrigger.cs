@@ -38,6 +38,10 @@ namespace TeamStreamFunctionApp
             data.videoId = Guid.Parse(videoId);
             log.Info($"Data received from API");
 
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+            Console.WriteLine(json);
+            log.Info(json);
+
             //call vision save
             await CallVisionAPISave(data);
             log.Info($"Data sent to save");

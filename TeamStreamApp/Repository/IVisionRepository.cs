@@ -7,5 +7,8 @@ namespace TeamStreamApp.Repository
     internal interface IVisionRepository
     {
         bool InsertVision(VisionAnalysis vision);
+        bool InsertMetadata(Metadata metadata, Guid videoId, int thumbIndex);
+        bool InsertDescription(Description description, Guid videoId, int thumbIndex);
+        bool InsertCaption(Description description, Guid videoId, int thumbIndex);
     }
 }

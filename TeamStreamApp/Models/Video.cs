@@ -18,12 +18,16 @@ namespace TeamStreamApp.Models
 
     public class Caption
     {
+        public Guid videoId { get; set; }
+        public int thumbnailIndex { get; set; }
         public string text { get; set; }
-        public double confidence { get; set; }
+        public double confidence { get; set; }        
     }
 
     public class Description
     {
+        public Guid videoId { get; set; }
+        public int thumbnailIndex { get; set; }
         public List<string> tags { get; set; }
         public List<Caption> captions { get; set; }
     }
