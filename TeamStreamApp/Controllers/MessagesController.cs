@@ -8,6 +8,8 @@ using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using Autofac;
 
 namespace TeamStreamApp.Controllers
 {
@@ -20,15 +22,19 @@ namespace TeamStreamApp.Controllers
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
-            if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
+            if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.IntroDialog());
+                using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity))
+                {
+                    await Conversation.SendAsync(activity, () => scope.Resolve<IDialog<object>>());
+                }
             }
             else
             {
-                HandleSystemMessage(activity);
+                this.HandleSystemMessage(activity);
             }
-            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
+
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
         private Activity HandleSystemMessage(Activity message)

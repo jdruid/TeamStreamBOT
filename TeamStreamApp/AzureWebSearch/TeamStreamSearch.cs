@@ -3,6 +3,8 @@ using System.Configuration;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Text;
 
 using TeamStreamApp.Search.Models;
 
@@ -13,6 +15,7 @@ namespace TeamStreamApp.Search
         private static ISearchServiceClient _searchClient;
         private static ISearchIndexClient _indexClient;
 
+       
         public static string errorMessage;
 
         public TeamStreamSearch(string index)
@@ -36,7 +39,7 @@ namespace TeamStreamApp.Search
                 errorMessage = e.Message.ToString();
             }
         }
-
+        
         public DocumentSearchResult Search(string searchText)
         {
             // Execute search based on query string
@@ -147,6 +150,6 @@ namespace TeamStreamApp.Search
             return null;
 
         }
-
+        
     }
 }

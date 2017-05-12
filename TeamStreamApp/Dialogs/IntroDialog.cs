@@ -4,63 +4,47 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System.Collections.Generic;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using TeamStreamApp.BotComponents.Search.Contracts.Services;
+using TeamStreamApp.BotComponents.Search.Contracts.Models;
 
 namespace TeamStreamApp.Dialogs
 {
     [Serializable]
-    public class IntroDialog : IDialog<IMessageActivity>
-    {   
-        string name;
-       
-        public async Task StartAsync(IDialogContext context)
+    public class IntroDialog : IDialog<object>
+    {
+        private ISearchClient searchClient;
+
+        public IntroDialog(ISearchClient searchClient)
         {
-            context.Wait(ConversationStartedAsync);
+            SetField.NotNull(out this.searchClient, nameof(searchClient), searchClient);
         }
 
-        public async Task ConversationStartedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        public Task StartAsync(IDialogContext context)
         {
-            IMessageActivity message = await argument;
-            //await context.PostAsync(message.Text);
-
-            PromptDialog.Text(
-                context: context,
-                resume: ResumeAndPromptDateRangeAsync,
-                prompt: "Hi there! I am the TeamStream Bot. What type of videos are you looking for?",
-                retry: "I didn't understand. Please try again.");
+            context.Wait(this.StartSearchDialog);
+            return Task.CompletedTask;
         }
 
-        public async Task ResumeAndPromptDateRangeAsync(IDialogContext context, IAwaitable<string> argument)
+        public Task StartSearchDialog(IDialogContext context, IAwaitable<IMessageActivity> input)
         {
-            name = await argument;
-
-            PromptDialog.Choice(
-                context: context,
-                resume: ResumeAndHandlePromptDateRangeAsync,
-                options: Enum.GetValues(typeof(DateRange)).Cast<DateRange>().ToArray(),
-                prompt: $"Ok. Do you have a date range in mind?",
-                retry: "I didn't understand. Please try again.");
-        }
-        
-        public async Task ResumeAndHandlePromptDateRangeAsync(IDialogContext context, IAwaitable<DateRange> argument)
-        {
-            var daterange = await argument;
-
-            if (daterange.Equals("None"))
-                await context.PostAsync("Ok, but that might take a while. Please wait...");
-            else
-                await context.PostAsync("Ok. I will start looking.");
-
-            context.Wait(ConversationStartedAsync);
+            context.Call(new VideoSearchDialog(this.searchClient), this.Done);
+            return Task.CompletedTask;
         }
 
-        public enum DateRange
+        public async Task Done(IDialogContext context, IAwaitable<IList<SearchHit>> input)
         {
-            Over1Year,
-            WithinAYear,
-            PastFewMonths,
-            None
+            var selection = await input;
+
+            if (selection != null && selection.Any())
+            {
+                string list = string.Join("\n\n", selection.Select(s => $"* {s.Name} ({s.Id})"));
+                await context.PostAsync($"Done! For future reference, you selected these properties:\n\n{list}");
+            }
+
+            context.Done<object>(null);
         }
-
-
     }
+
+
 }
