@@ -8,6 +8,7 @@ namespace TeamStreamApp.Search.Models
     public class KeywordSearchResults
     {
         public Guid Id { get; set; }
+       // public Guid VideoId { get; set; }
         public string Name { get; set; }
         public string Keywords { get; set; }
         public string RawUrl { get; set; }

@@ -6,7 +6,7 @@
 }
 
 <h1 class="page-header">
-    Search Results - Search Keywords
+    Search Results - Search Keywords (user entered)
 </h1>
 <div class="row">
     <div class="col-lg-9">
@@ -16,7 +16,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>Video Title</th>
                         <th>Keywords</th>
                         <th>Video Url</th>
                     </tr>
@@ -28,8 +28,9 @@
                         <td>@Html.DisplayFor(modelItem => item.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.Keywords)</td>
-                        <td>@Html.DisplayFor(modelItem => item.RawUrl)</td>
+                        <td><a href="@Html.DisplayFor(modelItem => item.RawUrl)" target="_blank"><i class="fa fa-file-movie-o"></i></a></td>
                     </tr>
+                    
                 }
                 </tbody>
             </table>

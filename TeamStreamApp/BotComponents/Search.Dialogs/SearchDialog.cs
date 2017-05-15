@@ -79,7 +79,7 @@ namespace TeamStreamApp.BotComponents.Search.Dialogs
 
         protected virtual Task InitialPrompt(IDialogContext context)
         {
-            string prompt = "What would you like to search for?";
+            string prompt = "Hi there! I am the TeamStream Video Search Bot. What would you like to search for?";
 
             if (!this.firstPrompt)
             {

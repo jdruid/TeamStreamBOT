@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<TeamStreamApp.Models.Video>
+
+@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -7,15 +9,13 @@
 </h1>
 <div class="row">
     <div class="col-lg-9">
-        <h2>Videos</h2>
+        <h2>Videos Uploaded</h2>
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>Delete</th>
                         <th>Name</th>
-                        <th>Link</th>
-                        <th></th>
+                        <th>Url</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,10 +24,8 @@
                         foreach (var item in Model)
                         {
                         <tr>
-                            <td></td>
-                            <td><a href="@item" target="_blank"><i class="fa fa-file-movie-o"></i></a></td>
-                            <td></td>
-                            <td></td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td><a href="@Html.DisplayFor(modelItem => item.RawUrl)" target="_blank"><i class="fa fa-file-movie-o"></i></a></td>                            
                         </tr>
                         }
                     }

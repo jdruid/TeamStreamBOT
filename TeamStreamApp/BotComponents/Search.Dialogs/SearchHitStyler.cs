@@ -10,17 +10,29 @@ namespace TeamStreamApp.BotComponents.Search.Dialogs
     [Serializable]
     public class SearchHitStyler : PromptStyler
     {
+        
         public override void Apply<T>(ref IMessageActivity message, string prompt, IReadOnlyList<T> options, IReadOnlyList<string> descriptions = null, string speak = null)
         {
             var hits = options as IList<SearchHit>;
             if (hits != null)
             {
-                var cards = hits.Select(h => new ThumbnailCard
+                var cards = hits.Select(h => new VideoCard
                 {
                     Title = h.Name,
-                    Images = new[] { new CardImage(h.ThumbnailUrl) },
-                    Buttons = new[] { new CardAction(ActionTypes.ImBack, "Pick this one", value: h.Id) },
-                    Text = h.Text
+                    Subtitle = h.Text,
+                    Image = new ThumbnailUrl
+                    {
+                        Url = h.ThumbnailUrl
+                    },
+                    Media = new List<MediaUrl>
+                    {
+                        new MediaUrl()
+                        {
+                            Url = h.RawUrl
+                        }
+                    },
+                    Buttons = new[] { new CardAction(ActionTypes.ImBack, "Pick this one", value: h.Name + " video") },
+
                 });
 
                 message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
@@ -33,5 +45,6 @@ namespace TeamStreamApp.BotComponents.Search.Dialogs
                 base.Apply<T>(ref message, prompt, options, descriptions, speak);
             }
         }
+        
     }
 }

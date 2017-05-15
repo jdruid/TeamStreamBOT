@@ -77,45 +77,43 @@ namespace TeamStreamApp.Controllers
             }
             
         }
-
-
-
+        
         // GET: Admin
-        public async Task<ActionResult> Manage()
+        public ActionResult Manage()
         {
+            return View(_videoRespository.GetVideos());
+            //try
+            //{
+            //    CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            try
-            {
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            //    // Create a blob client for interacting with the blob service.
+            //    blobClient = storageAccount.CreateCloudBlobClient();
 
-                // Create a blob client for interacting with the blob service.
-                blobClient = storageAccount.CreateCloudBlobClient();
+            //    blobThumbContainer = blobClient.GetContainerReference(blobThumbContainerName);
+            //    await blobThumbContainer.CreateIfNotExistsAsync();
+            //    await blobThumbContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
 
-                blobThumbContainer = blobClient.GetContainerReference(blobThumbContainerName);
-                await blobThumbContainer.CreateIfNotExistsAsync();
-                await blobThumbContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
-
-                blobVideoContainer = blobClient.GetContainerReference(blobVideoContainerName);                
-                await blobVideoContainer.CreateIfNotExistsAsync();
-                await blobVideoContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+            //    blobVideoContainer = blobClient.GetContainerReference(blobVideoContainerName);                
+            //    await blobVideoContainer.CreateIfNotExistsAsync();
+            //    await blobVideoContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
 
 
-                // Gets all Cloud Block Blobs in the blobContainerName and passes them to teh view
-                List<Uri> allBlobs = new List<Uri>();
-                foreach (IListBlobItem blob in blobVideoContainer.ListBlobs())
-                {
-                    if (blob.GetType() == typeof(CloudBlockBlob))
-                        allBlobs.Add(blob.Uri);
-                }
+            //    // Gets all Cloud Block Blobs in the blobContainerName and passes them to teh view
+            //    List<Uri> allBlobs = new List<Uri>();
+            //    foreach (IListBlobItem blob in blobVideoContainer.ListBlobs())
+            //    {
+            //        if (blob.GetType() == typeof(CloudBlockBlob))
+            //            allBlobs.Add(blob.Uri);
+            //    }
 
-                return View(allBlobs);
-            }
-            catch (Exception ex)
-            {
-                ViewData["message"] = ex.Message;
-                ViewData["trace"] = ex.StackTrace;
-                return View("Error");
-            }
+            //    return View(allBlobs);
+            //}
+            //catch (Exception ex)
+            //{
+            //    ViewData["message"] = ex.Message;
+            //    ViewData["trace"] = ex.StackTrace;
+            //    return View("Error");
+            //}
 
         }
         

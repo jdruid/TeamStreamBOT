@@ -36,15 +36,47 @@ namespace TeamStreamApp.Dialogs
         {
             var selection = await input;
 
-            if (selection != null && selection.Any())
-            {
-                string list = string.Join("\n\n", selection.Select(s => $"* {s.Name} ({s.Id})"));
-                await context.PostAsync($"Done! For future reference, you selected these properties:\n\n{list}");
-            }
+            var message = context.MakeMessage();
+
+            GetVideoCard(ref message, selection);
+
+            await context.PostAsync(message);
 
             context.Done<object>(null);
         }
+
+        private static void GetVideoCard(ref IMessageActivity message, IList<SearchHit> selection)
+        {
+            
+            if (selection != null)
+            {
+                var cards = selection.Select(h => new VideoCard
+                {
+                    Title = h.Name,
+                    Subtitle = h.Text,
+                    Image = new ThumbnailUrl
+                    {
+                        Url = h.ThumbnailUrl
+                    },
+                    Media = new List<MediaUrl>
+                    {
+                        new MediaUrl()
+                        {
+                            Url = h.RawUrl
+                        }
+                    },
+                    Buttons = new[] { new CardAction(ActionTypes.OpenUrl, "Learn More", value: "http://teamstreamproductions.com") },
+
+                });
+
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                message.Attachments = cards.Select(c => c.ToAttachment()).ToList();
+                //message.Text = prompt;
+               // message.Speak = speak;
+            }
+            
+        }
+        
     }
-
-
+    
 }

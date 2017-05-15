@@ -16,7 +16,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>Video Name</th>
                         <th>Keywords</th>
                         <th>Video URL</th>
                         <th>ThumbnailUrl</th>
@@ -30,8 +30,8 @@
                         <td>@Html.DisplayFor(modelItem => item.Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.Keywords)</td>
-                        <td>@Html.DisplayFor(modelItem => item.RawUrl)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ThumbnailUrl)</td>
+                        <td><a href="@Html.DisplayFor(modelItem => item.RawUrl)" target="_blank"><i class="fa fa-file-movie-o"></i></a></td>
+                        <td><a href="@Html.DisplayFor(modelItem => item.ThumbnailUrl)" target="_blank"><i class="fa fa-file-image-o"></i></a></td>
                         <td>@Html.DisplayFor(modelItem => item.Text)</td>
                     </tr>
                 }
