@@ -47,7 +47,7 @@ namespace TeamStreamApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
-            DocumentDBRepository<TeamStreamApp.Models.Video>.Initialize();
+            //DocumentDBRepository<TeamStreamApp.Models.Video>.Initialize();
 
             
         }

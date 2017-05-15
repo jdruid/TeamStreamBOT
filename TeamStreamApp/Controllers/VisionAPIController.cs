@@ -19,17 +19,6 @@ namespace TeamStreamApp.Controllers
         {
             _visionRespository = new VisionRepository();
         }
-        //// GET: api/Api
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET: api/Api/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST: api/Api
         [HttpPost]
@@ -40,16 +29,5 @@ namespace TeamStreamApp.Controllers
             
         }
 
-        
-
-        //// PUT: api/Api/5
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE: api/Api/5
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

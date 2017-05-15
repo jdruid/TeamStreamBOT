@@ -8,7 +8,7 @@
       "type": "blobTrigger",
       "direction": "in",
       "path": "videos/{name}",
-      "connection": "teamstream_STORAGE"
+      "connection": "teamstreamstorage_STORAGE"
     }
   ]
 }

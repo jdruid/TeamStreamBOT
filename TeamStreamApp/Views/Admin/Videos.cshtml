@@ -13,12 +13,12 @@
 
             <div class="form-group">
                 <label>Title</label>
-                <input class="form-control" id="Name" name="Name">
+                <input class="form-control" id="Name" name="Name" required="required">
             </div>
 
             <div class="form-group">
                 <div class='input-group date' id='datepicker'>
-                    <input type='text' class="form-control" id="Date" name="Date" placeholder="MM/DD/YYYY" />
+                    <input type='text' class="form-control" id="Date" name="Date" placeholder="MM/DD/YYYY" required="required" />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -27,18 +27,20 @@
 
             <div class="form-group">
                 <label>Keywords/Tags</label>
-                <input class="form-control" id="Keywords" name="Keywords">
+                <input class="form-control" id="Keywords" name="Keywords" required="required">
             </div>
 
             <div class="form-group">
                 <label>Video file</label>
-                <input type="file" id="file" name="selectFiles" class="upload" multiple />
+                <input type="file" id="file" name="selectFiles" class="upload" multiple required="required" />
             </div>
 
             <p id="FilesToUpload"></p>
 
-            <button type="submit" id="submit" class="btn btn-default">Submit</button>
-            <button type="reset" id="reset" class="btn btn-default">Reset</button>
+            <button type="submit" class="btn btn-primary btn-lg" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Video">Submit</button>
+            <button type="reset" id="reset" class="btn btn-default btn-lg">Reset</button>
+
+
 
         }
 
@@ -51,6 +53,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+            $('#submit').on('click', function () {
+                var $this = $(this);
+                $this.button('loading');               
+            });
 
             $("#datepicker").datepicker({
                 format: "mm/dd/yyyy",

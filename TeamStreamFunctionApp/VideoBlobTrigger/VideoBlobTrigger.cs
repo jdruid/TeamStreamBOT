@@ -24,6 +24,19 @@ namespace TeamStreamFunctionApp
         {
             string videoPath = Keys.baseUrl + "videos/" + name;
 
+            log.Info(videoPath);
+
+            //var ffmpeg = new NReco.VideoConverter.FFMpegConverter();
+            //// ffmpeg.FFMpegToolPath = System.Web.HttpContext.Current.Server.MapPath("~/App_Data");
+
+            //log.Info(Environment.GetEnvironmentVariable("HOME") + " and " + Environment.GetEnvironmentVariable("SITE_PATH"));
+
+            //var path = Path.Combine(
+            //    Environment.GetEnvironmentVariable("HOME"),
+            //    Environment.GetEnvironmentVariable("SITE_PATH"));
+
+            //ffmpeg.FFMpegToolPath = path;
+
             var ffProbe = new NReco.VideoInfo.FFProbe();
             var videoInfo = ffProbe.GetMediaInfo(videoPath);
 

@@ -25,7 +25,11 @@ namespace TeamStreamFunctionApp
         public static async Task Run(Stream myBlob, string name, TraceWriter log)
         {
             log.Info($"Thumbnail Blob trigger function processing: {myBlob}");
-            //https://teamstream.blob.core.windows.net/thumbnails/1636300269168499863_ebe1a4bb-3985-4d21-932c-a37c1b30f0a7_1_1.jpg
+
+            if (myBlob.Length == 0)
+                return;
+
+            //https://teamstreamstorage.blob.core.windows.net/thumbnails/1636300269168499863_ebe1a4bb-3985-4d21-932c-a37c1b30f0a7_1_1.jpg
             string videoId = GetGuidFromBlobName(name);
 
             //Call API
