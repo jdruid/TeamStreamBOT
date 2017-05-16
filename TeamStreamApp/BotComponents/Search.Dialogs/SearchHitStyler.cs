@@ -31,7 +31,7 @@ namespace TeamStreamApp.BotComponents.Search.Dialogs
                             Url = h.RawUrl
                         }
                     },
-                    Buttons = new[] { new CardAction(ActionTypes.ImBack, "Pick this one", value: h.Name + " video") },
+                    Buttons = new[] { new CardAction(ActionTypes.ImBack, "Pick this one", value: h.Id) },
 
                 });
 
