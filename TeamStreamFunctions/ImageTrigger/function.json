@@ -1,0 +1,14 @@
+﻿{
+  "disabled": false,
+  "scriptFile": "..\\bin\\TeamStreamFunctions.dll",
+  "entryPoint": "TeamStreamFunctions.ImageProcessor.Run",
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "thumbnails/{name}",
+      "connection": "teamstreamstorage_STORAGE"
+    }
+  ]
+}
