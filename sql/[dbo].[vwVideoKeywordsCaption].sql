@@ -8,7 +8,7 @@ GO
 CREATE VIEW [dbo].[vwVideoKeywordsCaption] AS
 
 --Search 2: Based on input and caption from API
-SELECT v.Id, v.Name, v.Keywords, v.RawUrl, c.Text, c.thumbnailIndex, va.thumbnailUrl FROM [Video] v
+SELECT newid() as 'Id', v.Name, v.Keywords, v.RawUrl, c.Text, c.thumbnailIndex, va.thumbnailUrl FROM [Video] v
 JOIN [Caption] c
 ON v.Id = c.videoId
 JOIN [VisionAnalysis] va

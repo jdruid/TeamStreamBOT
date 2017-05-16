@@ -7,5 +7,5 @@ GO
 
 CREATE VIEW [dbo].[vwVideoKeywords] AS
 
-SELECT v.Id, v.Name, v.Keywords, v.RawUrl
+SELECT newid() as 'Id', v.Name, v.Keywords, v.RawUrl
 FROM [Video] v
